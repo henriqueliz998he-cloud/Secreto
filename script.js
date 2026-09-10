@@ -1,1511 +1,1258 @@
-const SENHA = "Hg99";
+document.addEventListener("DOMContentLoaded", function () {
 
-const CHAVE_NOTAS = "espaco_anotacoes";
-const CHAVE_LIXEIRA = "espaco_lixeira";
-const CHAVE_TEMA = "espaco_tema";
-const CHAVE_ACESSO = "espaco_acesso";
-const CHAVE_MODO_VISUAL = "espaco_modo_visual";
+  // =========================
+  // CONFIGURAÇÕES
+  // =========================
 
-let notas = carregarDados(CHAVE_NOTAS);
-let lixeira = carregarDados(CHAVE_LIXEIRA);
+  const SENHA = "Hg99";
 
-let notaAtual = null;
-let filtroAtual = "todas";
-let timerBloqueio = null;
+  const CHAVE_NOTAS = "espaco_anotacoes";
+  const CHAVE_LIXEIRA = "espaco_lixeira";
+  const CHAVE_TEMA = "espaco_tema";
+  const CHAVE_ACESSO = "espaco_acesso";
+  const CHAVE_MODO_VISUAL = "espaco_modo_visual";
+
+  let notas = carregarDados(CHAVE_NOTAS);
+  let lixeira = carregarDados(CHAVE_LIXEIRA);
+
+  let notaAtual = null;
+  let filtroAtual = "todas";
+  let timerBloqueio = null;
 
 
-/* =========================
-   CARREGAR DADOS
-   ========================= */
+  // =========================
+  // FUNÇÕES DE DADOS
+  // =========================
 
-function carregarDados(chave) {
-  try {
-    const dados = localStorage.getItem(chave);
+  function carregarDados(chave) {
+    try {
+      const dados = localStorage.getItem(chave);
 
-    if (!dados) {
+      if (!dados) {
+        return [];
+      }
+
+      const resultado = JSON.parse(dados);
+
+      return Array.isArray(resultado) ? resultado : [];
+
+    } catch (erro) {
+      console.error("Erro ao carregar dados:", erro);
       return [];
     }
-
-    const convertido = JSON.parse(dados);
-
-    return Array.isArray(convertido)
-      ? convertido
-      : [];
-
-  } catch (erro) {
-    console.error(erro);
-    return [];
   }
-}
 
 
-function salvarNotas() {
-  localStorage.setItem(
-    CHAVE_NOTAS,
-    JSON.stringify(notas)
-  );
-}
-
-
-function salvarLixeira() {
-  localStorage.setItem(
-    CHAVE_LIXEIRA,
-    JSON.stringify(lixeira)
-  );
-}
-
-
-/* =========================
-   ELEMENTOS DA PÁGINA
-   ========================= */
-
-const telaSenha =
-  document.getElementById("telaSenha");
-
-const conteudo =
-  document.getElementById("conteudo");
-
-const senhaInput =
-  document.getElementById("senha");
-
-const entrar =
-  document.getElementById("entrar");
-
-const erroSenha =
-  document.getElementById("erroSenha");
-
-const telaPrincipal =
-  document.getElementById("telaPrincipal");
-
-const telaAnotacao =
-  document.getElementById("telaAnotacao");
-
-const editorNova =
-  document.getElementById("editorNova");
-
-const editorEdicao =
-  document.getElementById("editorEdicao");
-
-const telaLixeira =
-  document.getElementById("telaLixeira");
-
-const lista =
-  document.getElementById("lista");
-
-const listaVazia =
-  document.getElementById("listaVazia");
-
-const listaLixeira =
-  document.getElementById("listaLixeira");
-
-const lixeiraVazia =
-  document.getElementById("lixeiraVazia");
-
-const pesquisa =
-  document.getElementById("pesquisa");
-
-const contador =
-  document.getElementById("contador");
-
-const contadorLixeira =
-  document.getElementById("contadorLixeira");
-
-const tituloAberto =
-  document.getElementById("tituloAberto");
-
-const dataAberto =
-  document.getElementById("dataAberto");
-
-const conteudoAberto =
-  document.getElementById("conteudoAberto");
-
-const novoTitulo =
-  document.getElementById("novoTitulo");
-
-const novoConteudo =
-  document.getElementById("novoConteudo");
-
-const tituloEdicao =
-  document.getElementById("tituloEdicao");
-
-const conteudoEdicao =
-  document.getElementById("conteudoEdicao");
-
-const botaoModoVisualizacao =
-  document.getElementById(
-    "modoVisualizacao"
-  );
-
-
-/* =========================
-   VERIFICAR MODO VISUALIZAÇÃO
-   ========================= */
-
-function estaEmModoVisualizacao() {
-  return document.body.classList.contains(
-    "modo-visualizacao"
-  );
-}
-
-
-/* =========================
-   TEMA
-   ========================= */
-
-function carregarTema() {
-  const tema =
-    localStorage.getItem(CHAVE_TEMA);
-
-  if (tema === "claro") {
-    document.body.classList.add(
-      "tema-claro"
+  function salvarNotas() {
+    localStorage.setItem(
+      CHAVE_NOTAS,
+      JSON.stringify(notas)
     );
   }
-}
 
 
-function alternarTema() {
+  function salvarLixeira() {
+    localStorage.setItem(
+      CHAVE_LIXEIRA,
+      JSON.stringify(lixeira)
+    );
+  }
 
-  document.body.classList.toggle(
-    "tema-claro"
-  );
 
-  if (
-    document.body.classList.contains(
-      "tema-claro"
-    )
-  ) {
+  // =========================
+  // ELEMENTOS DA PÁGINA
+  // =========================
+
+  const telaSenha = document.getElementById("telaSenha");
+  const conteudo = document.getElementById("conteudo");
+
+  const senhaInput = document.getElementById("senha");
+  const entrar = document.getElementById("entrar");
+  const erroSenha = document.getElementById("erroSenha");
+
+  const telaPrincipal = document.getElementById("telaPrincipal");
+  const telaAnotacao = document.getElementById("telaAnotacao");
+
+  const editorNova = document.getElementById("editorNova");
+  const editorEdicao = document.getElementById("editorEdicao");
+
+  const telaLixeira = document.getElementById("telaLixeira");
+
+  const lista = document.getElementById("lista");
+  const listaVazia = document.getElementById("listaVazia");
+
+  const listaLixeira = document.getElementById("listaLixeira");
+  const lixeiraVazia = document.getElementById("lixeiraVazia");
+
+  const pesquisa = document.getElementById("pesquisa");
+
+  const contador = document.getElementById("contador");
+  const contadorLixeira = document.getElementById("contadorLixeira");
+
+  const tituloAberto = document.getElementById("tituloAberto");
+  const dataAberto = document.getElementById("dataAberto");
+  const conteudoAberto = document.getElementById("conteudoAberto");
+
+  const novoTitulo = document.getElementById("novoTitulo");
+  const novoConteudo = document.getElementById("novoConteudo");
+
+  const tituloEdicao = document.getElementById("tituloEdicao");
+  const conteudoEdicao = document.getElementById("conteudoEdicao");
+
+  const botaoModoVisualizacao =
+    document.getElementById("modoVisualizacao");
+
+
+  // =========================
+  // TEMA
+  // =========================
+
+  function carregarTema() {
+
+    const tema = localStorage.getItem(CHAVE_TEMA);
+
+    if (tema === "claro") {
+      document.body.classList.add("tema-claro");
+    } else {
+      document.body.classList.remove("tema-claro");
+    }
+  }
+
+
+  function alternarTema() {
+
+    document.body.classList.toggle("tema-claro");
+
+    const temaAtual =
+      document.body.classList.contains("tema-claro")
+        ? "claro"
+        : "escuro";
 
     localStorage.setItem(
       CHAVE_TEMA,
-      "claro"
-    );
-
-  } else {
-
-    localStorage.setItem(
-      CHAVE_TEMA,
-      "escuro"
-    );
-  }
-}
-
-
-document
-  .getElementById("tema")
-  .addEventListener(
-    "click",
-    alternarTema
-  );
-
-
-/* =========================
-   MODO VISUALIZAÇÃO
-   ========================= */
-
-function carregarModoVisualizacao() {
-
-  const modoVisual =
-    localStorage.getItem(
-      CHAVE_MODO_VISUAL
-    );
-
-  if (modoVisual === "ativo") {
-
-    document.body.classList.add(
-      "modo-visualizacao"
+      temaAtual
     );
   }
 
-  atualizarBotaoModoVisualizacao();
-}
 
+  const botaoTema = document.getElementById("tema");
 
-function alternarModoVisualizacao() {
-
-  if (
-    estaEmModoVisualizacao()
-  ) {
-
-    document.body.classList.remove(
-      "modo-visualizacao"
-    );
-
-    localStorage.setItem(
-      CHAVE_MODO_VISUAL,
-      "desativado"
-    );
-
-  } else {
-
-    document.body.classList.add(
-      "modo-visualizacao"
-    );
-
-    localStorage.setItem(
-      CHAVE_MODO_VISUAL,
-      "ativo"
+  if (botaoTema) {
+    botaoTema.addEventListener(
+      "click",
+      alternarTema
     );
   }
 
-  atualizarBotaoModoVisualizacao();
-}
 
+  // =========================
+  // MODO VISUALIZAÇÃO
+  // =========================
 
-function atualizarBotaoModoVisualizacao() {
+  function carregarModoVisualizacao() {
 
-  if (!botaoModoVisualizacao) {
-    return;
-  }
+    const modo =
+      localStorage.getItem(CHAVE_MODO_VISUAL);
 
-  if (
-    estaEmModoVisualizacao()
-  ) {
+    if (modo === "ativo") {
 
-    botaoModoVisualizacao.textContent =
-      "🔓";
+      document.body.classList.add(
+        "modo-visualizacao"
+      );
 
-    botaoModoVisualizacao.title =
-      "Sair do modo visualização";
+    } else {
 
-  } else {
-
-    botaoModoVisualizacao.textContent =
-      "👁️";
-
-    botaoModoVisualizacao.title =
-      "Ativar modo visualização";
-  }
-}
-
-
-botaoModoVisualizacao.addEventListener(
-  "click",
-  alternarModoVisualizacao
-);
-
-
-/* =========================
-   SISTEMA DE SENHA
-   ========================= */
-
-function verificarAcesso() {
-
-  const ultimoAcesso =
-    Number(
-      localStorage.getItem(
-        CHAVE_ACESSO
-      ) || 0
-    );
-
-  const agora = Date.now();
-
-  const cincoMinutos =
-    5 * 60 * 1000;
-
-  if (
-    ultimoAcesso > 0 &&
-    agora - ultimoAcesso <
-      cincoMinutos
-  ) {
-
-    entrarNoSistema();
-
-  } else {
-
-    bloquearTela();
-  }
-}
-
-
-function registrarAcesso() {
-
-  localStorage.setItem(
-    CHAVE_ACESSO,
-    Date.now().toString()
-  );
-}
-
-
-function entrarNoSistema() {
-
-  telaSenha.classList.add(
-    "oculto"
-  );
-
-  conteudo.classList.remove(
-    "oculto"
-  );
-
-  registrarAcesso();
-
-  iniciarTimerBloqueio();
-
-  mostrarTelaPrincipal();
-}
-
-
-function bloquearTela() {
-
-  clearTimeout(
-    timerBloqueio
-  );
-
-  localStorage.removeItem(
-    CHAVE_ACESSO
-  );
-
-  telaSenha.classList.remove(
-    "oculto"
-  );
-
-  conteudo.classList.add(
-    "oculto"
-  );
-
-  senhaInput.value = "";
-
-  erroSenha.textContent = "";
-
-  notaAtual = null;
-}
-
-
-function tentarEntrar() {
-
-  const senhaDigitada =
-    senhaInput.value.trim();
-
-  if (senhaDigitada === SENHA) {
-
-    erroSenha.textContent = "";
-
-    entrarNoSistema();
-
-  } else {
-
-    erroSenha.textContent =
-      "Senha incorreta.";
-
-    senhaInput.value = "";
-
-    senhaInput.focus();
-  }
-}
-
-
-entrar.addEventListener(
-  "click",
-  tentarEntrar
-);
-
-
-senhaInput.addEventListener(
-  "keydown",
-  function(event) {
-
-    if (event.key === "Enter") {
-      tentarEntrar();
+      document.body.classList.remove(
+        "modo-visualizacao"
+      );
     }
 
+    atualizarBotaoModoVisualizacao();
   }
-);
 
 
-/* =========================
-   BLOQUEIO AUTOMÁTICO
-   ========================= */
+  function alternarModoVisualizacao() {
 
-function iniciarTimerBloqueio() {
+    const ativo =
+      document.body.classList.contains(
+        "modo-visualizacao"
+      );
 
-  clearTimeout(
-    timerBloqueio
-  );
+    if (ativo) {
 
-  timerBloqueio =
-    setTimeout(
-      function() {
-        bloquearTela();
-      },
-      5 * 60 * 1000
+      document.body.classList.remove(
+        "modo-visualizacao"
+      );
+
+      localStorage.setItem(
+        CHAVE_MODO_VISUAL,
+        "desativado"
+      );
+
+    } else {
+
+      document.body.classList.add(
+        "modo-visualizacao"
+      );
+
+      localStorage.setItem(
+        CHAVE_MODO_VISUAL,
+        "ativo"
+      );
+    }
+
+    atualizarBotaoModoVisualizacao();
+    renderizarLista();
+  }
+
+
+  function atualizarBotaoModoVisualizacao() {
+
+    if (!botaoModoVisualizacao) {
+      return;
+    }
+
+    const ativo =
+      document.body.classList.contains(
+        "modo-visualizacao"
+      );
+
+    if (ativo) {
+
+      botaoModoVisualizacao.textContent =
+        "👁️ Sair do modo visualização";
+
+    } else {
+
+      botaoModoVisualizacao.textContent =
+        "👁️ Modo Visualização";
+    }
+  }
+
+
+  if (botaoModoVisualizacao) {
+
+    botaoModoVisualizacao.addEventListener(
+      "click",
+      alternarModoVisualizacao
     );
-}
-
-
-function atividadeUsuario() {
-
-  if (
-    conteudo.classList.contains(
-      "oculto"
-    )
-  ) {
-    return;
   }
 
-  registrarAcesso();
 
-  iniciarTimerBloqueio();
-}
+  // =========================
+  // SENHA / ACESSO
+  // =========================
 
+  function verificarAcesso() {
 
-document.addEventListener(
-  "click",
-  atividadeUsuario
-);
+    const ultimoAcesso =
+      localStorage.getItem(CHAVE_ACESSO);
 
-document.addEventListener(
-  "touchstart",
-  atividadeUsuario
-);
+    if (!ultimoAcesso) {
 
-document.addEventListener(
-  "keydown",
-  atividadeUsuario
-);
+      bloquearTela();
+      return;
+    }
 
+    const agora = Date.now();
 
-/* =========================
-   BLOQUEAR MANUALMENTE
-   ========================= */
+    const tempoPassado =
+      agora - Number(ultimoAcesso);
 
-document
-  .getElementById("bloquear")
-  .addEventListener(
-    "click",
-    function(event) {
+    const cincoMinutos =
+      5 * 60 * 1000;
 
-      event.stopPropagation();
+    if (tempoPassado < cincoMinutos) {
+
+      mostrarTelaPrincipal();
+      iniciarTimerBloqueio();
+
+    } else {
 
       bloquearTela();
     }
-  );
+  }
 
 
-/* =========================
-   TELAS
-   ========================= */
+  function registrarAcesso() {
 
-function esconderTodasAsTelas() {
-
-  telaPrincipal.classList.add(
-    "oculto"
-  );
-
-  telaAnotacao.classList.add(
-    "oculto"
-  );
-
-  editorNova.classList.add(
-    "oculto"
-  );
-
-  editorEdicao.classList.add(
-    "oculto"
-  );
-
-  telaLixeira.classList.add(
-    "oculto"
-  );
-}
-
-
-function mostrarTelaPrincipal() {
-
-  esconderTodasAsTelas();
-
-  telaPrincipal.classList.remove(
-    "oculto"
-  );
-
-  renderizarLista();
-}
-
-
-function mostrarTelaAnotacao(id) {
-
-  const nota =
-    notas.find(
-      function(item) {
-        return item.id === id;
-      }
+    localStorage.setItem(
+      CHAVE_ACESSO,
+      String(Date.now())
     );
+  }
 
-  if (!nota) {
+
+  function entrarNoSistema() {
+
+    registrarAcesso();
+
+    erroSenha.textContent = "";
 
     mostrarTelaPrincipal();
 
-    return;
+    iniciarTimerBloqueio();
+
+    if (senhaInput) {
+      senhaInput.value = "";
+    }
   }
 
-  notaAtual = nota;
 
-  esconderTodasAsTelas();
+  function bloquearTela() {
 
-  telaAnotacao.classList.remove(
-    "oculto"
-  );
-
-  tituloAberto.textContent =
-    nota.titulo;
-
-  dataAberto.textContent =
-    "Criada em: " +
-    formatarData(
-      nota.criadaEm
+    localStorage.removeItem(
+      CHAVE_ACESSO
     );
 
-  conteudoAberto.textContent =
-    nota.conteudo;
+    if (timerBloqueio) {
+      clearTimeout(timerBloqueio);
+    }
 
-  atualizarBotaoFixar();
+    esconderTodasAsTelas();
 
-  atualizarBotaoConcluir();
-}
+    telaSenha.classList.remove(
+      "oculto"
+    );
 
+    if (conteudo) {
+      conteudo.classList.add(
+        "oculto"
+      );
+    }
 
-function mostrarEditorNova() {
-
-  if (
-    estaEmModoVisualizacao()
-  ) {
-    return;
+    if (senhaInput) {
+      senhaInput.value = "";
+      senhaInput.focus();
+    }
   }
 
-  esconderTodasAsTelas();
 
-  editorNova.classList.remove(
-    "oculto"
-  );
+  function tentarEntrar() {
 
-  novoTitulo.value = "";
+    if (!senhaInput) {
+      return;
+    }
 
-  novoConteudo.value = "";
+    const senhaDigitada =
+      senhaInput.value;
 
-  setTimeout(
-    function() {
-      novoTitulo.focus();
-    },
-    100
-  );
-}
+    if (senhaDigitada === SENHA) {
 
+      entrarNoSistema();
 
-function mostrarEditorEdicao() {
+    } else {
 
-  if (
-    estaEmModoVisualizacao()
-  ) {
-    return;
+      erroSenha.textContent =
+        "Senha incorreta.";
+
+      senhaInput.value = "";
+
+      senhaInput.focus();
+    }
   }
 
-  if (!notaAtual) {
-    return;
+
+  if (entrar) {
+
+    entrar.addEventListener(
+      "click",
+      tentarEntrar
+    );
   }
 
-  esconderTodasAsTelas();
 
-  editorEdicao.classList.remove(
-    "oculto"
-  );
+  if (senhaInput) {
 
-  tituloEdicao.value =
-    notaAtual.titulo;
+    senhaInput.addEventListener(
+      "keydown",
+      function (evento) {
 
-  conteudoEdicao.value =
-    notaAtual.conteudo;
+        if (evento.key === "Enter") {
+          tentarEntrar();
+        }
 
-  setTimeout(
-    function() {
-      tituloEdicao.focus();
-    },
-    100
-  );
-}
-
-
-function mostrarLixeira() {
-
-  if (
-    estaEmModoVisualizacao()
-  ) {
-    return;
+      }
+    );
   }
 
-  esconderTodasAsTelas();
 
-  telaLixeira.classList.remove(
-    "oculto"
-  );
+  // =========================
+  // BLOQUEIO POR INATIVIDADE
+  // =========================
 
-  renderizarLixeira();
-}
+  function iniciarTimerBloqueio() {
+
+    if (timerBloqueio) {
+      clearTimeout(timerBloqueio);
+    }
+
+    timerBloqueio = setTimeout(
+      function () {
+
+        bloquearTela();
+
+      },
+      5 * 60 * 1000
+    );
+  }
 
 
-/* =========================
-   NOVA ANOTAÇÃO
-   ========================= */
+  function atividadeUsuario() {
 
-document
-  .getElementById("adicionar")
-  .addEventListener(
+    const senhaVisivel =
+      !telaSenha.classList.contains(
+        "oculto"
+      );
+
+    if (senhaVisivel) {
+      return;
+    }
+
+    registrarAcesso();
+    iniciarTimerBloqueio();
+  }
+
+
+  document.addEventListener(
     "click",
-    mostrarEditorNova
+    atividadeUsuario
+  );
+
+  document.addEventListener(
+    "touchstart",
+    atividadeUsuario
+  );
+
+  document.addEventListener(
+    "keydown",
+    atividadeUsuario
   );
 
 
-function salvarNovaAnotacao() {
+  // =========================
+  // BOTÃO BLOQUEAR
+  // =========================
 
-  if (
-    estaEmModoVisualizacao()
-  ) {
-    return;
+  const botaoBloquear =
+    document.getElementById("bloquear");
+
+  if (botaoBloquear) {
+
+    botaoBloquear.addEventListener(
+      "click",
+      bloquearTela
+    );
   }
 
-  const titulo =
-    novoTitulo.value.trim();
 
-  const conteudoTexto =
-    novoConteudo.value.trim();
+  // =========================
+  // TELAS
+  // =========================
 
+  function esconderTodasAsTelas() {
 
-  if (!titulo) {
-
-    alert(
-      "Digite um título para a anotação."
+    telaPrincipal.classList.add(
+      "oculto"
     );
+
+    telaAnotacao.classList.add(
+      "oculto"
+    );
+
+    editorNova.classList.add(
+      "oculto"
+    );
+
+    editorEdicao.classList.add(
+      "oculto"
+    );
+
+    telaLixeira.classList.add(
+      "oculto"
+    );
+  }
+
+
+  function mostrarTelaPrincipal() {
+
+    esconderTodasAsTelas();
+
+    if (conteudo) {
+      conteudo.classList.remove(
+        "oculto"
+      );
+    }
+
+    telaSenha.classList.add(
+      "oculto"
+    );
+
+    telaPrincipal.classList.remove(
+      "oculto"
+    );
+
+    renderizarLista();
+  }
+
+
+  function mostrarTelaAnotacao(nota) {
+
+    if (!nota) {
+      return;
+    }
+
+    notaAtual = nota;
+
+    esconderTodasAsTelas();
+
+    telaAnotacao.classList.remove(
+      "oculto"
+    );
+
+    tituloAberto.textContent =
+      nota.titulo || "Sem título";
+
+    conteudoAberto.textContent =
+      nota.conteudo || "";
+
+    dataAberto.textContent =
+      formatarData(nota.criadaEm);
+
+    atualizarBotaoFixar();
+    atualizarBotaoConcluir();
+  }
+
+
+  function mostrarEditorNova() {
+
+    if (
+      document.body.classList.contains(
+        "modo-visualizacao"
+      )
+    ) {
+      return;
+    }
+
+    esconderTodasAsTelas();
+
+    editorNova.classList.remove(
+      "oculto"
+    );
+
+    novoTitulo.value = "";
+    novoConteudo.value = "";
 
     novoTitulo.focus();
-
-    return;
   }
 
 
-  if (!conteudoTexto) {
+  function mostrarEditorEdicao() {
 
-    alert(
-      "Digite alguma informação na anotação."
+    if (
+      document.body.classList.contains(
+        "modo-visualizacao"
+      )
+    ) {
+      return;
+    }
+
+    if (!notaAtual) {
+      return;
+    }
+
+    esconderTodasAsTelas();
+
+    editorEdicao.classList.remove(
+      "oculto"
     );
 
-    novoConteudo.focus();
+    tituloEdicao.value =
+      notaAtual.titulo || "";
 
-    return;
-  }
-
-
-  const novaNota = {
-
-    id:
-      Date.now().toString(),
-
-    titulo:
-      titulo,
-
-    conteudo:
-      conteudoTexto,
-
-    criadaEm:
-      new Date().toISOString(),
-
-    atualizadaEm:
-      new Date().toISOString(),
-
-    fixada:
-      false,
-
-    concluida:
-      false
-  };
-
-
-  notas.unshift(
-    novaNota
-  );
-
-  salvarNotas();
-
-  mostrarTelaPrincipal();
-}
-
-
-document
-  .getElementById("salvarNova")
-  .addEventListener(
-    "click",
-    salvarNovaAnotacao
-  );
-
-
-function cancelarNova() {
-
-  novoTitulo.value = "";
-
-  novoConteudo.value = "";
-
-  mostrarTelaPrincipal();
-}
-
-
-document
-  .getElementById("cancelarNova")
-  .addEventListener(
-    "click",
-    cancelarNova
-  );
-
-
-document
-  .getElementById("cancelarNova2")
-  .addEventListener(
-    "click",
-    cancelarNova
-  );
-
-
-/* =========================
-   EDITAR
-   ========================= */
-
-document
-  .getElementById("editar")
-  .addEventListener(
-    "click",
-    mostrarEditorEdicao
-  );
-
-
-function salvarEdicao() {
-
-  if (
-    estaEmModoVisualizacao()
-  ) {
-    return;
-  }
-
-  if (!notaAtual) {
-    return;
-  }
-
-
-  const titulo =
-    tituloEdicao.value.trim();
-
-  const conteudoTexto =
-    conteudoEdicao.value.trim();
-
-
-  if (!titulo) {
-
-    alert(
-      "Digite um título."
-    );
+    conteudoEdicao.value =
+      notaAtual.conteudo || "";
 
     tituloEdicao.focus();
-
-    return;
   }
 
 
-  if (!conteudoTexto) {
+  function mostrarLixeira() {
 
-    alert(
-      "Digite alguma informação."
+    if (
+      document.body.classList.contains(
+        "modo-visualizacao"
+      )
+    ) {
+      return;
+    }
+
+    esconderTodasAsTelas();
+
+    telaLixeira.classList.remove(
+      "oculto"
     );
 
-    conteudoEdicao.focus();
-
-    return;
+    renderizarLixeira();
   }
 
 
-  const indice =
-    notas.findIndex(
-      function(item) {
-        return item.id === notaAtual.id;
-      }
+  // =========================
+  // NOVA ANOTAÇÃO
+  // =========================
+
+  const botaoAdicionar =
+    document.getElementById("adicionar");
+
+  if (botaoAdicionar) {
+
+    botaoAdicionar.addEventListener(
+      "click",
+      mostrarEditorNova
     );
+  }
 
 
-  if (indice === -1) {
+  function salvarNovaAnotacao() {
+
+    if (
+      document.body.classList.contains(
+        "modo-visualizacao"
+      )
+    ) {
+      return;
+    }
+
+    const titulo =
+      novoTitulo.value.trim();
+
+    const conteudoTexto =
+      novoConteudo.value.trim();
+
+    if (!titulo) {
+
+      alert(
+        "Digite um título para a anotação."
+      );
+
+      novoTitulo.focus();
+
+      return;
+    }
+
+    const novaNota = {
+
+      id:
+        Date.now().toString(),
+
+      titulo:
+        titulo,
+
+      conteudo:
+        conteudoTexto,
+
+      criadaEm:
+        new Date().toISOString(),
+
+      fixada:
+        false,
+
+      concluida:
+        false
+    };
+
+    notas.unshift(novaNota);
+
+    salvarNotas();
 
     mostrarTelaPrincipal();
-
-    return;
   }
 
 
-  notas[indice].titulo =
-    titulo;
+  const botaoSalvarNova =
+    document.getElementById("salvarNova");
 
-  notas[indice].conteudo =
-    conteudoTexto;
+  if (botaoSalvarNova) {
 
-  notas[indice].atualizadaEm =
-    new Date().toISOString();
-
-
-  notaAtual =
-    notas[indice];
-
-  salvarNotas();
-
-  mostrarTelaAnotacao(
-    notaAtual.id
-  );
-}
+    botaoSalvarNova.addEventListener(
+      "click",
+      salvarNovaAnotacao
+    );
+  }
 
 
-document
-  .getElementById("salvarEdicao")
-  .addEventListener(
-    "click",
-    salvarEdicao
-  );
+  const botaoCancelarNova =
+    document.getElementById("cancelarNova");
+
+  if (botaoCancelarNova) {
+
+    botaoCancelarNova.addEventListener(
+      "click",
+      mostrarTelaPrincipal
+    );
+  }
 
 
-function cancelarEdicao() {
+  const botaoCancelarNova2 =
+    document.getElementById("cancelarNova2");
 
-  if (notaAtual) {
+  if (botaoCancelarNova2) {
+
+    botaoCancelarNova2.addEventListener(
+      "click",
+      mostrarTelaPrincipal
+    );
+  }
+
+
+  // =========================
+  // EDITAR ANOTAÇÃO
+  // =========================
+
+  const botaoEditar =
+    document.getElementById("editar");
+
+  if (botaoEditar) {
+
+    botaoEditar.addEventListener(
+      "click",
+      mostrarEditorEdicao
+    );
+  }
+
+
+  function salvarEdicao() {
+
+    if (
+      document.body.classList.contains(
+        "modo-visualizacao"
+      )
+    ) {
+      return;
+    }
+
+    if (!notaAtual) {
+      return;
+    }
+
+    const novoTituloTexto =
+      tituloEdicao.value.trim();
+
+    const novoConteudoTexto =
+      conteudoEdicao.value.trim();
+
+    if (!novoTituloTexto) {
+
+      alert(
+        "Digite um título para a anotação."
+      );
+
+      tituloEdicao.focus();
+
+      return;
+    }
+
+    const indice =
+      notas.findIndex(
+        function (nota) {
+
+          return String(nota.id) ===
+            String(notaAtual.id);
+
+        }
+      );
+
+    if (indice === -1) {
+      return;
+    }
+
+    notas[indice].titulo =
+      novoTituloTexto;
+
+    notas[indice].conteudo =
+      novoConteudoTexto;
+
+    notaAtual =
+      notas[indice];
+
+    salvarNotas();
 
     mostrarTelaAnotacao(
-      notaAtual.id
+      notaAtual
+    );
+  }
+
+
+  const botaoSalvarEdicao =
+    document.getElementById("salvarEdicao");
+
+  if (botaoSalvarEdicao) {
+
+    botaoSalvarEdicao.addEventListener(
+      "click",
+      salvarEdicao
+    );
+  }
+
+
+  const botaoCancelarEdicao =
+    document.getElementById(
+      "cancelarEdicao"
     );
 
-  } else {
+  if (botaoCancelarEdicao) {
+
+    botaoCancelarEdicao.addEventListener(
+      "click",
+      function () {
+
+        mostrarTelaAnotacao(
+          notaAtual
+        );
+
+      }
+    );
+  }
+
+
+  const botaoCancelarEdicao2 =
+    document.getElementById(
+      "cancelarEdicao2"
+    );
+
+  if (botaoCancelarEdicao2) {
+
+    botaoCancelarEdicao2.addEventListener(
+      "click",
+      function () {
+
+        mostrarTelaAnotacao(
+          notaAtual
+        );
+
+      }
+    );
+  }
+
+
+  // =========================
+  // VOLTAR
+  // =========================
+
+  const botaoVoltar =
+    document.getElementById("voltar");
+
+  if (botaoVoltar) {
+
+    botaoVoltar.addEventListener(
+      "click",
+      function () {
+
+        notaAtual = null;
+
+        mostrarTelaPrincipal();
+
+      }
+    );
+  }
+
+
+  // =========================
+  // FIXAR
+  // =========================
+
+  const botaoFixar =
+    document.getElementById("fixar");
+
+  if (botaoFixar) {
+
+    botaoFixar.addEventListener(
+      "click",
+      function () {
+
+        if (
+          document.body.classList.contains(
+            "modo-visualizacao"
+          )
+        ) {
+          return;
+        }
+
+        if (!notaAtual) {
+          return;
+        }
+
+        const indice =
+          notas.findIndex(
+            function (nota) {
+
+              return String(nota.id) ===
+                String(notaAtual.id);
+
+            }
+          );
+
+        if (indice === -1) {
+          return;
+        }
+
+        notas[indice].fixada =
+          !notas[indice].fixada;
+
+        notaAtual =
+          notas[indice];
+
+        salvarNotas();
+
+        atualizarBotaoFixar();
+      }
+    );
+  }
+
+
+  function atualizarBotaoFixar() {
+
+    if (!botaoFixar || !notaAtual) {
+      return;
+    }
+
+    if (notaAtual.fixada) {
+
+      botaoFixar.textContent =
+        "📌 Desfixar";
+
+    } else {
+
+      botaoFixar.textContent =
+        "📌 Fixar";
+    }
+  }
+
+
+  // =========================
+  // CONCLUIR
+  // =========================
+
+  const botaoConcluir =
+    document.getElementById("concluir");
+
+  if (botaoConcluir) {
+
+    botaoConcluir.addEventListener(
+      "click",
+      function () {
+
+        if (
+          document.body.classList.contains(
+            "modo-visualizacao"
+          )
+        ) {
+          return;
+        }
+
+        if (!notaAtual) {
+          return;
+        }
+
+        const indice =
+          notas.findIndex(
+            function (nota) {
+
+              return String(nota.id) ===
+                String(notaAtual.id);
+
+            }
+          );
+
+        if (indice === -1) {
+          return;
+        }
+
+        notas[indice].concluida =
+          !notas[indice].concluida;
+
+        notaAtual =
+          notas[indice];
+
+        salvarNotas();
+
+        atualizarBotaoConcluir();
+      }
+    );
+  }
+
+
+  function atualizarBotaoConcluir() {
+
+    if (!botaoConcluir || !notaAtual) {
+      return;
+    }
+
+    if (notaAtual.concluida) {
+
+      botaoConcluir.textContent =
+        "↩️ Marcar como pendente";
+
+    } else {
+
+      botaoConcluir.textContent =
+        "✅ Concluir";
+    }
+  }
+
+
+  // =========================
+  // EXCLUIR
+  // =========================
+
+  const botaoExcluir =
+    document.getElementById("excluir");
+
+  if (botaoExcluir) {
+
+    botaoExcluir.addEventListener(
+      "click",
+      function () {
+
+        if (
+          document.body.classList.contains(
+            "modo-visualizacao"
+          )
+        ) {
+          return;
+        }
+
+        if (!notaAtual) {
+          return;
+        }
+
+        moverParaLixeira(
+          notaAtual.id
+        );
+
+      }
+    );
+  }
+
+
+  function moverParaLixeira(id) {
+
+    const indice =
+      notas.findIndex(
+        function (nota) {
+
+          return String(nota.id) ===
+            String(id);
+
+        }
+      );
+
+    if (indice === -1) {
+      return;
+    }
+
+    const notaRemovida =
+      notas[indice];
+
+    notas.splice(
+      indice,
+      1
+    );
+
+    lixeira.unshift(
+      notaRemovida
+    );
+
+    salvarNotas();
+    salvarLixeira();
+
+    notaAtual = null;
 
     mostrarTelaPrincipal();
   }
-}
 
 
-document
-  .getElementById("cancelarEdicao")
-  .addEventListener(
-    "click",
-    cancelarEdicao
-  );
+  // =========================
+  // PESQUISA
+  // =========================
 
+  if (pesquisa) {
 
-document
-  .getElementById("cancelarEdicao2")
-  .addEventListener(
-    "click",
-    cancelarEdicao
-  );
+    pesquisa.addEventListener(
+      "input",
+      function () {
 
+        renderizarLista();
 
-/* =========================
-   VOLTAR
-   ========================= */
-
-document
-  .getElementById("voltar")
-  .addEventListener(
-    "click",
-    mostrarTelaPrincipal
-  );
-
-
-/* =========================
-   FIXAR
-   ========================= */
-
-document
-  .getElementById("fixar")
-  .addEventListener(
-    "click",
-    function() {
-
-      if (
-        estaEmModoVisualizacao()
-      ) {
-        return;
       }
-
-      if (!notaAtual) {
-        return;
-      }
+    );
+  }
 
 
-      const indice =
-        notas.findIndex(
-          function(item) {
-            return item.id ===
-              notaAtual.id;
-          }
-        );
+  // =========================
+  // FILTROS
+  // =========================
 
-
-      if (indice === -1) {
-        return;
-      }
-
-
-      notas[indice].fixada =
-        !notas[indice].fixada;
-
-
-      notaAtual =
-        notas[indice];
-
-
-      salvarNotas();
-
-      atualizarBotaoFixar();
-
-      renderizarLista();
-    }
-  );
-
-
-function atualizarBotaoFixar() {
-
-  const botao =
+  const botaoFiltroTodas =
     document.getElementById(
-      "fixar"
+      "filtroTodas"
     );
 
-
-  if (!notaAtual) {
-    return;
-  }
-
-
-  botao.textContent = "📌";
-
-
-  if (notaAtual.fixada) {
-
-    botao.title =
-      "Desafixar anotação";
-
-  } else {
-
-    botao.title =
-      "Fixar anotação";
-  }
-}
-
-
-/* =========================
-   CONCLUIR
-   ========================= */
-
-document
-  .getElementById("concluir")
-  .addEventListener(
-    "click",
-    function() {
-
-      if (
-        estaEmModoVisualizacao()
-      ) {
-        return;
-      }
-
-      if (!notaAtual) {
-        return;
-      }
-
-
-      const indice =
-        notas.findIndex(
-          function(item) {
-            return item.id ===
-              notaAtual.id;
-          }
-        );
-
-
-      if (indice === -1) {
-        return;
-      }
-
-
-      notas[indice].concluida =
-        !notas[indice].concluida;
-
-
-      notaAtual =
-        notas[indice];
-
-
-      salvarNotas();
-
-      atualizarBotaoConcluir();
-
-      renderizarLista();
-    }
-  );
-
-
-function atualizarBotaoConcluir() {
-
-  const botao =
+  const botaoFiltroPendentes =
     document.getElementById(
-      "concluir"
+      "filtroPendentes"
+    );
+
+  const botaoFiltroConcluidas =
+    document.getElementById(
+      "filtroConcluidas"
+    );
+
+  const botaoFiltroFixadas =
+    document.getElementById(
+      "filtroFixadas"
     );
 
 
-  if (!notaAtual) {
-    return;
+  if (botaoFiltroTodas) {
+
+    botaoFiltroTodas.addEventListener(
+      "click",
+      function () {
+
+        alterarFiltro("todas");
+
+      }
+    );
   }
 
 
-  if (notaAtual.concluida) {
+  if (botaoFiltroPendentes) {
 
-    botao.textContent =
-      "✓ Concluída";
+    botaoFiltroPendentes.addEventListener(
+      "click",
+      function () {
 
-    botao.classList.add(
-      "concluida"
-    );
+        alterarFiltro("pendentes");
 
-  } else {
-
-    botao.textContent =
-      "Marcar como concluída";
-
-    botao.classList.remove(
-      "concluida"
-    );
-  }
-}
-
-
-/* =========================
-   EXCLUIR
-   ========================= */
-
-document
-  .getElementById("excluir")
-  .addEventListener(
-    "click",
-    function() {
-
-      if (
-        estaEmModoVisualizacao()
-      ) {
-        return;
-      }
-
-      if (!notaAtual) {
-        return;
-      }
-
-
-      const confirmar =
-        confirm(
-          "Mover esta anotação para a lixeira?"
-        );
-
-
-      if (!confirmar) {
-        return;
-      }
-
-
-      moverParaLixeira(
-        notaAtual.id
-      );
-
-
-      notaAtual = null;
-
-      mostrarTelaPrincipal();
-    }
-  );
-
-
-function moverParaLixeira(id) {
-
-  const indice =
-    notas.findIndex(
-      function(item) {
-        return item.id === id;
       }
     );
-
-
-  if (indice === -1) {
-    return;
   }
 
 
-  const nota =
-    notas[indice];
+  if (botaoFiltroConcluidas) {
 
+    botaoFiltroConcluidas.addEventListener(
+      "click",
+      function () {
 
-  nota.excluidaEm =
-    new Date().toISOString();
+        alterarFiltro("concluidas");
 
-
-  lixeira.unshift(
-    nota
-  );
-
-
-  notas.splice(
-    indice,
-    1
-  );
-
-
-  salvarNotas();
-
-  salvarLixeira();
-}
-
-
-/* =========================
-   PESQUISA
-   ========================= */
-
-pesquisa.addEventListener(
-  "input",
-  renderizarLista
-);
-
-
-/* =========================
-   FILTROS
-   ========================= */
-
-document
-  .getElementById("filtroTodas")
-  .addEventListener(
-    "click",
-    function() {
-      alterarFiltro("todas");
-    }
-  );
-
-
-document
-  .getElementById("filtroPendentes")
-  .addEventListener(
-    "click",
-    function() {
-      alterarFiltro("pendentes");
-    }
-  );
-
-
-document
-  .getElementById("filtroConcluidas")
-  .addEventListener(
-    "click",
-    function() {
-      alterarFiltro("concluidas");
-    }
-  );
-
-
-document
-  .getElementById("filtroFixadas")
-  .addEventListener(
-    "click",
-    function() {
-      alterarFiltro("fixadas");
-    }
-  );
-
-
-function alterarFiltro(filtro) {
-
-  filtroAtual =
-    filtro;
-
-
-  document
-    .querySelectorAll(".filtro")
-    .forEach(
-      function(botao) {
-
-        botao.classList.remove(
-          "ativo"
-        );
       }
     );
+  }
 
 
-  if (filtro === "todas") {
+  if (botaoFiltroFixadas) {
+
+    botaoFiltroFixadas.addEventListener(
+      "click",
+      function () {
+
+        alterarFiltro("fixadas");
+
+      }
+    );
+  }
+
+
+  function alterarFiltro(novoFiltro) {
+
+    filtroAtual =
+      novoFiltro;
 
     document
-      .getElementById(
-        "filtroTodas"
-      )
-      .classList.add(
-        "ativo"
-      );
-  }
-
-
-  if (filtro === "pendentes") {
-
-    document
-      .getElementById(
-        "filtroPendentes"
-      )
-      .classList.add(
-        "ativo"
-      );
-  }
-
-
-  if (filtro === "concluidas") {
-
-    document
-      .getElementById(
-        "filtroConcluidas"
-      )
-      .classList.add(
-        "ativo"
-      );
-  }
-
-
-  if (filtro === "fixadas") {
-
-    document
-      .getElementById(
-        "filtroFixadas"
-      )
-      .classList.add(
-        "ativo"
-      );
-  }
-
-
-  renderizarLista();
-}
-
-
-/* =========================
-   RENDERIZAR LISTA
-   ========================= */
-
-function renderizarLista() {
-
-  lista.innerHTML = "";
-
-  const termo =
-    pesquisa.value
-      .trim()
-      .toLowerCase();
-
-
-  let filtradas =
-    notas.filter(
-      function(nota) {
-
-        const titulo =
-          String(
-            nota.titulo || ""
-          ).toLowerCase();
-
-
-        if (
-          !titulo.includes(termo)
-        ) {
-          return false;
-        }
-
-
-        if (
-          filtroAtual ===
-            "pendentes" &&
-          nota.concluida
-        ) {
-          return false;
-        }
-
-
-        if (
-          filtroAtual ===
-            "concluidas" &&
-          !nota.concluida
-        ) {
-          return false;
-        }
-
-
-        if (
-          filtroAtual ===
-            "fixadas" &&
-          !nota.fixada
-        ) {
-          return false;
-        }
-
-
-        return true;
-      }
-    );
-
-
-  filtradas.sort(
-    function(a, b) {
-
-      if (
-        a.fixada &&
-        !b.fixada
-      ) {
-        return -1;
-      }
-
-
-      if (
-        !a.fixada &&
-        b.fixada
-      ) {
-        return 1;
-      }
-
-
-      return (
-        new Date(b.criadaEm) -
-        new Date(a.criadaEm)
-      );
-    }
-  );
-
-
-  filtradas.forEach(
-    function(nota) {
-
-      const item =
-        document.createElement(
-          "button"
-        );
-
-
-      item.type = "button";
-
-      item.className =
-        "item-nota";
-
-
-      if (nota.concluida) {
-
-        item.classList.add(
-          "item-concluida"
-        );
-      }
-
-
-      const conteudoItem =
-        document.createElement(
-          "div"
-        );
-
-
-      conteudoItem.className =
-        "item-nota-conteudo";
-
-
-      const ladoTexto =
-        document.createElement(
-          "div"
-        );
-
-
-      const titulo =
-        document.createElement(
-          "h3"
-        );
-
-
-      titulo.textContent =
-        nota.titulo;
-
-
-      const info =
-        document.createElement(
-          "p"
-        );
-
-
-      info.className =
-        "item-nota-info";
-
-
-      info.textContent =
-        nota.concluida
-          ? "✓ Concluída"
-          : "Pendente";
-
-
-      ladoTexto.appendChild(
-        titulo
-      );
-
-      ladoTexto.appendChild(
-        info
-      );
-
-
-      conteudoItem.appendChild(
-        ladoTexto
-      );
-
-
-      if (nota.fixada) {
-
-        const fixada =
-          document.createElement(
-            "span"
+      .querySelectorAll(".filtro")
+      .forEach(
+        function (botao) {
+
+          botao.classList.remove(
+            "ativo"
           );
 
-
-        fixada.className =
-          "item-nota-fixada";
-
-
-        fixada.textContent =
-          "📌";
-
-
-        conteudoItem.appendChild(
-          fixada
-        );
-      }
-
-
-      item.appendChild(
-        conteudoItem
-      );
-
-
-      item.addEventListener(
-        "click",
-        function() {
-
-          mostrarTelaAnotacao(
-            nota.id
-          );
         }
       );
 
+    let botaoAtivo = null;
 
-      lista.appendChild(
-        item
+    if (novoFiltro === "todas") {
+      botaoAtivo = botaoFiltroTodas;
+    }
+
+    if (novoFiltro === "pendentes") {
+      botaoAtivo = botaoFiltroPendentes;
+    }
+
+    if (novoFiltro === "concluidas") {
+      botaoAtivo = botaoFiltroConcluidas;
+    }
+
+    if (novoFiltro === "fixadas") {
+      botaoAtivo = botaoFiltroFixadas;
+    }
+
+    if (botaoAtivo) {
+
+      botaoAtivo.classList.add(
+        "ativo"
       );
     }
-  );
+
+    renderizarLista();
+  }
 
 
-  contador.textContent =
-    notas.length +
-    (
-      notas.length === 1
-        ? " anotação"
-        : " anotações"
-    );
+  // =========================
+  // RENDERIZAR LISTA
+  // =========================
+
+  function renderizarLista() {
+
+    if (!lista) {
+      return;
+    }
+
+    lista.innerHTML = "";
+
+    const termo =
+      pesquisa
+        ? pesquisa.value
+            .trim()
+            .toLowerCase()
+        : "";
 
 
-  if (
-    filtradas.length === 0
-  ) {
+    let filtradas =
+      notas.filter(
+        function (nota) {
 
-    listaVazia.classList.remove(
-      "oc
+          const titulo =
+            String(
+              nota.titulo || ""
+            ).toLowerCase();
+
+          if (
+            !titulo.includes(termo)
+          ) {
+            return false;
+          }
+
+          if (
+            filtroAtual === "pendentes" &&
+            nota.concluida
+          ) {
+            return false;
+          }
+
+          if (
+            filtroAtual ==
