@@ -1,0 +1,618 @@
+/* =========================
+   CONFIGURAÇÕES GERAIS
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background 0.3s, color 0.3s;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.oculto {
+    display: none !important;
+}
+
+
+/* =========================
+   TELA DE SENHA
+========================= */
+
+.tela {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.caixa-senha {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.caixa-senha h1 {
+    margin-bottom: 10px;
+    font-size: 32px;
+}
+
+.caixa-senha p {
+    color: #bbb;
+}
+
+#senha {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+}
+
+#senha:focus {
+    border-color: #f00;
+}
+
+#entrar {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#entrar:active {
+    transform: scale(0.98);
+}
+
+#erroSenha {
+    min-height: 20px;
+    color: #ff4444 !important;
+    font-weight: bold;
+}
+
+
+/* =========================
+   CONTEÚDO PRINCIPAL
+========================= */
+
+#conteudo {
+    width: 100%;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+#telaPrincipal {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.cabecalho h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.cabecalho p {
+    margin: 6px 0 0;
+    color: #aaa;
+}
+
+.botoes-topo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+
+/* =========================
+   BOTÕES MINI
+========================= */
+
+.botao-mini {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: red;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.botao-mini:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================
+   PESQUISA
+========================= */
+
+.area-pesquisa {
+    margin-bottom: 12px;
+}
+
+#pesquisa {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+}
+
+#pesquisa:focus {
+    border-color: red;
+}
+
+
+/* =========================
+   FILTROS
+========================= */
+
+.filtros {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+}
+
+.filtros button {
+    flex-shrink: 0;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: #111;
+    color: #fff;
+    font-size: 13px;
+}
+
+.filtros button:active {
+    background: red;
+}
+
+
+/* =========================
+   AÇÕES PRINCIPAIS
+========================= */
+
+.acoes-principais {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.acoes-principais button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.acoes-principais button:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================
+   LISTA DE ANOTAÇÕES
+========================= */
+
+#lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-anotacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 52px;
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #111;
+    cursor: pointer;
+}
+
+.item-anotacao:active {
+    transform: scale(0.99);
+}
+
+.titulo-item {
+    flex: 1;
+    font-size: 16px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.item-anotacao.concluida {
+    opacity: 0.65;
+}
+
+.item-anotacao.concluida .titulo-item {
+    text-decoration: line-through;
+}
+
+
+/* =========================
+   MENSAGENS VAZIAS
+========================= */
+
+.mensagem-vazia {
+    text-align: center;
+    padding: 35px 15px;
+    color: #888;
+}
+
+
+/* =========================
+   TELA DA ANOTAÇÃO
+========================= */
+
+#telaAnotacao {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cabecalho-anotacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.acoes-anotacao {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.anotacao-aberta {
+    width: 100%;
+}
+
+.anotacao-aberta h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    overflow-wrap: anywhere;
+}
+
+#dataAberto {
+    margin: 0 0 25px;
+    color: #888;
+    font-size: 13px;
+}
+
+.conteudo-anotacao {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+#concluir {
+    border: none;
+    border-radius: 9px;
+    padding: 10px 13px;
+    background: red;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   EDITORES
+========================= */
+
+.editor {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.editor h1 {
+    margin-top: 0;
+    font-size: 26px;
+}
+
+.editor input,
+.editor textarea {
+    width: 100%;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    outline: none;
+}
+
+.editor input {
+    padding: 14px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.editor textarea {
+    min-height: 300px;
+    padding: 14px;
+    resize: vertical;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.editor input:focus,
+.editor textarea:focus {
+    border-color: red;
+}
+
+.botoes-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.botoes-editor button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+
+/* =========================
+   LIXEIRA
+========================= */
+
+#telaLixeira {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cabecalho-lixeira {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.cabecalho-lixeira h1 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.cabecalho-lixeira p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+#listaLixeira {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-lixeira {
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #111;
+}
+
+.item-lixeira > div:first-child {
+    font-weight: bold;
+    overflow-wrap: anywhere;
+    margin-bottom: 10px;
+}
+
+.botoes-lixeira {
+    display: flex;
+    gap: 7px;
+}
+
+.botoes-lixeira button {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    padding: 9px;
+    background: red;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   MODO VISUALIZAÇÃO
+========================= */
+
+body.modo-visualizacao .acao-edicao {
+    display: none !important;
+}
+
+body.modo-visualizacao #abrirLixeira {
+    display: none !important;
+}
+
+body.modo-visualizacao #adicionar {
+    display: none !important;
+}
+
+body.modo-visualizacao #limparTudo {
+    display: none !important;
+}
+
+
+/* =========================
+   TEMA CLARO
+========================= */
+
+body.tema-claro {
+    background: #fff;
+    color: #000;
+}
+
+body.tema-claro .cabecalho p,
+body.tema-claro #dataAberto,
+body.tema-claro .caixa-senha p,
+body.tema-claro .mensagem-vazia,
+body.tema-claro .cabecalho-lixeira p {
+    color: #666;
+}
+
+body.tema-claro #senha,
+body.tema-claro #pesquisa,
+body.tema-claro .editor input,
+body.tema-claro .editor textarea {
+    background: #f5f5f5;
+    color: #000;
+    border-color: #ccc;
+}
+
+body.tema-claro .filtros button {
+    background: #f5f5f5;
+    color: #000;
+    border-color: #ccc;
+}
+
+body.tema-claro .item-anotacao,
+body.tema-claro .item-lixeira {
+    background: #f5f5f5;
+    border-color: #ddd;
+}
+
+
+/* =========================
+   CELULAR
+========================= */
+
+@media (max-width: 600px) {
+
+    #conteudo {
+        padding: 12px;
+    }
+
+    .cabecalho {
+        align-items: flex-start;
+    }
+
+    .cabecalho h1 {
+        font-size: 24px;
+    }
+
+    .botoes-topo {
+        max-width: 150px;
+    }
+
+    .botao-mini {
+        padding: 7px 9px;
+        font-size: 12px;
+    }
+
+    .cabecalho-anotacao {
+        align-items: flex-start;
+    }
+
+    .acoes-anotacao {
+        max-width: 190px;
+    }
+
+    .anotacao-aberta h1 {
+        font-size: 24px;
+    }
+
+    .editor textarea {
+        min-height: 250px;
+    }
+}
+
+
+/* =========================
+   TELAS MUITO PEQUENAS
+========================= */
+
+@media (max-width: 380px) {
+
+    .cabecalho {
+        flex-direction: column;
+    }
+
+    .botoes-topo {
+        max-width: 100%;
+        justify-content: flex-start;
+    }
+
+    .cabecalho-anotacao {
+        flex-direction: column;
+    }
+
+    .acoes-anotacao {
+        max-width: 100%;
+        justify-content: flex-start;
+    }
+}
