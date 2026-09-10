@@ -1256,3 +1256,570 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (
             filtroAtual ==
+            "pendentes" &&
+            nota.concluida
+          ) {
+            return false;
+          }
+
+          if (
+            filtroAtual === "concluidas" &&
+            !nota.concluida
+          ) {
+            return false;
+          }
+
+          if (
+            filtroAtual === "fixadas" &&
+            !nota.fixada
+          ) {
+            return false;
+          }
+
+          return true;
+        }
+      );
+
+
+    // Fixadas aparecem primeiro
+    filtradas.sort(
+      function (a, b) {
+
+        if (
+          Boolean(a.fixada) !==
+          Boolean(b.fixada)
+        ) {
+
+          return a.fixada ? -1 : 1;
+        }
+
+        return (
+          new Date(
+            b.criadaEm || 0
+          ) -
+          new Date(
+            a.criadaEm || 0
+          )
+        );
+      }
+    );
+
+
+    if (contador) {
+
+      contador.textContent =
+        notas.length +
+        (
+          notas.length === 1
+            ? " anotação"
+            : " anotações"
+        );
+    }
+
+
+    if (
+      filtradas.length === 0
+    ) {
+
+      if (listaVazia) {
+
+        listaVazia.classList.remove(
+          "oculto"
+        );
+      }
+
+      return;
+
+    } else {
+
+      if (listaVazia) {
+
+        listaVazia.classList.add(
+          "oculto"
+        );
+      }
+    }
+
+
+    filtradas.forEach(
+      function (nota) {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+        item.className =
+          "item-anotacao";
+
+
+        if (nota.concluida) {
+
+          item.classList.add(
+            "concluida"
+          );
+        }
+
+
+        const titulo =
+          document.createElement(
+            "div"
+          );
+
+        titulo.className =
+          "titulo-item";
+
+        titulo.textContent =
+          nota.titulo ||
+          "Sem título";
+
+
+        const informacao =
+          document.createElement(
+            "div"
+          );
+
+        informacao.className =
+          "item-anotacao-info";
+
+
+        const data =
+          document.createElement(
+            "span"
+          );
+
+        data.textContent =
+          formatarData(
+            nota.criadaEm
+          );
+
+
+        const icones =
+          document.createElement(
+            "span"
+          );
+
+
+        if (nota.fixada) {
+
+          const fixado =
+            document.createElement(
+              "span"
+            );
+
+          fixado.textContent =
+            "📌 ";
+
+          icones.appendChild(
+            fixado
+          );
+        }
+
+
+        if (nota.concluida) {
+
+          const concluida =
+            document.createElement(
+              "span"
+            );
+
+          concluida.textContent =
+            "✅";
+
+          icones.appendChild(
+            concluida
+          );
+        }
+
+
+        informacao.appendChild(
+          data
+        );
+
+        informacao.appendChild(
+          icones
+        );
+
+
+        item.appendChild(
+          titulo
+        );
+
+        item.appendChild(
+          informacao
+        );
+
+
+        item.addEventListener(
+          "click",
+          function () {
+
+            mostrarTelaAnotacao(
+              nota
+            );
+
+          }
+        );
+
+
+        lista.appendChild(
+          item
+        );
+
+      }
+    );
+  }
+
+
+  // =========================
+  // LIXEIRA
+  // =========================
+
+                          const botaoAbrirLixeira =
+    document.getElementById(
+      "abrirLixeira"
+    );
+
+  if (botaoAbrirLixeira) {
+
+    botaoAbrirLixeira.addEventListener(
+      "click",
+      mostrarLixeira
+    );
+  }
+
+
+  const botaoVoltarLixeira =
+    document.getElementById(
+      "voltarLixeira"
+    );
+
+  if (botaoVoltarLixeira) {
+
+    botaoVoltarLixeira.addEventListener(
+      "click",
+      mostrarTelaPrincipal
+    );
+  }
+
+
+  function renderizarLixeira() {
+
+    if (!listaLixeira) {
+      return;
+    }
+
+    listaLixeira.innerHTML = "";
+
+
+    if (contadorLixeira) {
+
+      contadorLixeira.textContent =
+        lixeira.length +
+        (
+          lixeira.length === 1
+            ? " item"
+            : " itens"
+        );
+    }
+
+
+    if (
+      lixeira.length === 0
+    ) {
+
+      if (lixeiraVazia) {
+
+        lixeiraVazia.classList.remove(
+          "oculto"
+        );
+      }
+
+      return;
+
+    } else {
+
+      if (lixeiraVazia) {
+
+        lixeiraVazia.classList.add(
+          "oculto"
+        );
+      }
+    }
+
+
+    lixeira.forEach(
+      function (nota) {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+        item.className =
+          "item-lixeira";
+
+
+        const titulo =
+          document.createElement(
+            "div"
+          );
+
+        titulo.textContent =
+          nota.titulo ||
+          "Sem título";
+
+
+        const botoes =
+          document.createElement(
+            "div"
+          );
+
+        botoes.className =
+          "botoes-lixeira";
+
+
+        const restaurar =
+          document.createElement(
+            "button"
+          );
+
+        restaurar.textContent =
+          "↩️ Restaurar";
+
+
+        restaurar.addEventListener(
+          "click",
+          function () {
+
+            restaurarNota(
+              nota.id
+            );
+
+          }
+        );
+
+
+        const excluir =
+          document.createElement(
+            "button"
+          );
+
+        excluir.textContent =
+          "🗑️ Excluir";
+
+        excluir.addEventListener(
+          "click",
+          function () {
+
+            excluirPermanentemente(
+              nota.id
+            );
+
+          }
+        );
+
+
+        botoes.appendChild(
+          restaurar
+        );
+
+        botoes.appendChild(
+          excluir
+        );
+
+
+        item.appendChild(
+          titulo
+        );
+
+        item.appendChild(
+          botoes
+        );
+
+
+        listaLixeira.appendChild(
+          item
+        );
+
+      }
+    );
+  }
+
+
+  function restaurarNota(id) {
+
+    const indice =
+      lixeira.findIndex(
+        function (nota) {
+
+          return String(nota.id) ===
+            String(id);
+
+        }
+      );
+
+    if (indice === -1) {
+      return;
+    }
+
+    const nota =
+      lixeira[indice];
+
+    lixeira.splice(
+      indice,
+      1
+    );
+
+    notas.unshift(
+      nota
+    );
+
+    salvarNotas();
+    salvarLixeira();
+
+    renderizarLixeira();
+  }
+
+
+  function excluirPermanentemente(id) {
+
+    const indice =
+      lixeira.findIndex(
+        function (nota) {
+
+          return String(nota.id) ===
+            String(id);
+
+        }
+      );
+
+    if (indice === -1) {
+      return;
+    }
+
+    const confirmar =
+      confirm(
+        "Excluir esta anotação permanentemente?"
+      );
+
+    if (!confirmar) {
+      return;
+    }
+
+    lixeira.splice(
+      indice,
+      1
+    );
+
+    salvarLixeira();
+
+    renderizarLixeira();
+  }
+
+
+  // =========================
+  // LIMPAR TODAS AS ANOTAÇÕES
+  // =========================
+
+    const botaoLimparTudo =
+    document.getElementById(
+      "limparTudo"
+    );
+
+  if (botaoLimparTudo) {
+
+    botaoLimparTudo.addEventListener(
+      "click",
+      function () {
+
+        if (
+          document.body.classList.contains(
+            "modo-visualizacao"
+          )
+        ) {
+          return;
+        }
+
+        if (notas.length === 0) {
+
+          alert(
+            "Não há anotações para enviar para a lixeira."
+          );
+
+          return;
+        }
+
+
+        const confirmar =
+          confirm(
+            "Enviar todas as anotações para a lixeira?"
+          );
+
+        if (!confirmar) {
+          return;
+        }
+
+
+        lixeira =
+          lixeira.concat(
+            notas
+          );
+
+        notas = [];
+
+
+        salvarNotas();
+        salvarLixeira();
+
+
+        renderizarLista();
+
+      }
+    );
+  }
+
+
+  // =========================
+  // DATA
+  // =========================
+
+        function formatarData(data) {
+
+    if (!data) {
+      return "";
+    }
+
+    const dataObj =
+      new Date(data);
+
+    if (
+      Number.isNaN(
+        dataObj.getTime()
+      )
+    ) {
+      return "";
+    }
+
+    return dataObj.toLocaleDateString(
+      "pt-BR",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }
+    );
+  }
+
+
+  // =========================
+  // INICIALIZAÇÃO
+  // =========================
+
+  carregarTema();
+
+  carregarModoVisualizacao();
+
+  verificarAcesso();
+
+});                  
